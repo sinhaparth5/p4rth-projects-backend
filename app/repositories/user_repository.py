@@ -82,4 +82,46 @@ class UserRepository:
         if not ObjectId.is_valid(id):
             return None
         
+        # Filter not None values
+        update_data = { k: v for k, v in user.dict().items if v is not None }
         
+        if update_data:
+            if "password" in update_data:
+                password = update_data.pop("password")
+                update_data["password_hash"] = self._hash_password(password)
+                
+            if "username" in update_data:
+                existing = await self.get_by_username(update_data["username"])
+                if existing and str(existing.id) != id:
+                    raise ValueError("Username already exists")
+                
+            if "email" in update_data:
+                existing = await self.get_by_email(update_data["email"])
+                if existing and str(existing.id) != id:
+                    raise ValueError("Email already exists")
+                
+            await db.db[self.collection_name].update_one(
+                {"_id": ObjectId(id)},
+                {"$set": update_data}
+            )
+            
+        return await self.get_by_id(id)
+    
+    async def delete(self, id: str) -> bool:
+        if not ObjectId.is_valid(id):
+            return False
+        
+        result = await db.db[self.collection_name].delete_one({"_id": ObjectId(id)})
+        return result.delete_count > 0
+    
+    async def authenticate(self, username: str, password: str) -> Optional[User]:
+        user = await self.get_by_username(username)
+        if not user:
+            return None
+        
+        if not self._verify_password(user.password_hash, password):
+            return None
+        
+        # Return user without password_hash
+        user_dict = { k: v for k, v in user.dict().items if k != 'password_hash' }
+        return User(**user_dict)
