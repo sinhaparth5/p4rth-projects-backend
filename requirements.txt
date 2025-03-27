@@ -2,7 +2,11 @@ fastapi
 uvicorn
 motor
 pydantic
+pydantic[email]
 grpcio
 grpcio-tools
 protobuf
 python-dotenv
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
