@@ -1,0 +1,198 @@
+syntax = "proto3";
+
+package protos;
+
+service UserService {
+    rpc GetUsers(GetUsersRequest) returns (GetUsersResponse);
+    rpc GetUser(GetUserRequest) returns (UserResponse);
+    rpc GetUserByUsername(GetUserByUsernameRequest) returns (UserResponse);
+    rpc CreateUser(CreateUserRequest) returns (UserResponse);
+    rpc UpdateUser(UpdateUserRequest) returns (UserResponse);
+    rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+    rpc AuthenticateUser(AuthenticateUserRequest) returns (AuthenticateUserResponse);
+  }
+  
+service ProjectService {
+    rpc GetProjects(GetProjectsRequest) returns (GetProjectsResponse);
+    rpc GetProject(GetProjectRequest) returns (ProjectResponse);
+    rpc GetProjectBySlug(GetProjectBySlugRequest) returns (ProjectResponse);
+    rpc GetProjectsByUser(GetProjectsByUserRequest) returns (GetProjectsResponse);
+    rpc CreateProject(CreateProjectRequest) returns (ProjectResponse);
+    rpc UpdateProject(UpdateProjectRequest) returns (ProjectResponse);
+    rpc DeleteProject(DeleteProjectRequest) returns (DeleteProjectResponse);
+  }
+  
+service ProjectImageService {
+    rpc GetImagesByProject(GetImagesByProjectRequest) returns (GetProjectImagesResponse);
+    rpc GetImage(GetImageRequest) returns (ProjectImageResponse);
+    rpc CreateImage(CreateImageRequest) returns (ProjectImageResponse);
+    rpc UpdateImage(UpdateImageRequest) returns (ProjectImageResponse);
+    rpc DeleteImage(DeleteImageRequest) returns (DeleteImageResponse);
+  }
+
+message GetUsersRequest {
+    int32 skip = 1;
+    int32 limit = 2;
+}
+
+message GetUsersResponse {
+    repeated User users = 1;
+}
+
+message GetUserRequest {
+    string id = 1;
+}
+
+message GetUserByUsernameRequest {
+    string username = 1;
+}
+
+message CreateUserRequest {
+    string username = 1;
+    string email = 2;
+    string password = 3;
+    string role = 4;
+}
+
+message UpdateUserRequest {
+    string id = 1;
+    optional string username = 2;
+    optional string email = 3;
+    optional string password = 4;
+    optional string role = 5;
+  }
+  
+  message DeleteUserRequest {
+    string id = 1;
+  }
+  
+  message DeleteUserResponse {
+    bool success = 1;
+  }
+  
+  message User {
+    string id = 1;
+    string username = 2;
+    string email = 3;
+    string role = 4;
+    string created_at = 5;
+  }
+  
+  message UserResponse {
+    User user = 1;
+  }
+  
+  message AuthenticateUserRequest {
+    string username = 1;
+    string password = 2;
+  }
+  
+  message AuthenticateUserResponse {
+    string token = 1;
+    User user = 2;
+  }
+  
+  // Project messages
+  message GetProjectsRequest {
+    int32 skip = 1;
+    int32 limit = 2;
+  }
+  
+  message GetProjectsResponse {
+    repeated Project projects = 1;
+  }
+  
+  message GetProjectRequest {
+    string id = 1;
+  }
+  
+  message GetProjectBySlugRequest {
+    string slug = 1;
+  }
+  
+  message GetProjectsByUserRequest {
+    string user_id = 1;
+    int32 skip = 2;
+    int32 limit = 3;
+  }
+  
+  message CreateProjectRequest {
+    string slug = 1;
+    string title = 2;
+    string body = 3;
+    optional string github_link = 4;
+    string user_id = 5;
+  }
+  
+  message UpdateProjectRequest {
+    string id = 1;
+    optional string slug = 2;
+    optional string title = 3;
+    optional string body = 4;
+    optional string github_link = 5;
+  }
+  
+  message DeleteProjectRequest {
+    string id = 1;
+  }
+  
+  message DeleteProjectResponse {
+    bool success = 1;
+  }
+  
+  message Project {
+    string id = 1;
+    string slug = 2;
+    string title = 3;
+    string body = 4;
+    optional string github_link = 5;
+    string user_id = 6;
+    string created_at = 7;
+    string updated_at = 8;
+    repeated ProjectImage images = 9;
+  }
+  
+  message ProjectResponse {
+    Project project = 1;
+  }
+  
+  // Project Image messages
+  message GetImagesByProjectRequest {
+    string project_id = 1;
+  }
+  
+  message GetProjectImagesResponse {
+    repeated ProjectImage images = 1;
+  }
+  
+  message GetImageRequest {
+    string id = 1;
+  }
+  
+  message CreateImageRequest {
+    string project_id = 1;
+    string image_url = 2;
+  }
+  
+  message UpdateImageRequest {
+    string id = 1;
+    optional string image_url = 2;
+  }
+  
+  message DeleteImageRequest {
+    string id = 1;
+  }
+  
+  message DeleteImageResponse {
+    bool success = 1;
+  }
+  
+  message ProjectImage {
+    string id = 1;
+    string project_id = 2;
+    string image_url = 3;
+  }
+  
+  message ProjectImageResponse {
+    ProjectImage image = 1;
+  }
