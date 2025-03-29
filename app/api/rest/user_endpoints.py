@@ -2,11 +2,11 @@ from fastapi import APIRouter, HTTPException, status, Query, Path, Depends
 from typing import List
 
 from app.models.models import User, UserCreate, UserUpdate
-from app.services.user_service import UserService
+from app.services.user_service import UserServices
 from app.api.rest.auth import get_current_user
 
 router = APIRouter()
-user_service = UserService()
+user_service = UserServices()
 
 @router.get("/users/", response_model=List[User])
 async def read_users(

@@ -7,7 +7,7 @@ from typing import Optional
 
 from app.core.config import settings
 from app.models.models import User
-from app.services.user_service import UserService
+from app.services.user_service import UserServices
 
 # JWT settings
 SECRET_KEY = settings.SECRET_KEY
@@ -15,7 +15,7 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 # OAuth2 scheme
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/token")
 
 # Token models
 class Token(BaseModel):
@@ -27,7 +27,7 @@ class TokenData(BaseModel):
 
 # Router
 router = APIRouter()
-user_service = UserService()
+user_service = UserServices()
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     """Create a JWT access token."""

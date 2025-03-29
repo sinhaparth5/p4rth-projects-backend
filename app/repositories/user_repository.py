@@ -83,7 +83,7 @@ class UserRepository:
             return None
         
         # Filter not None values
-        update_data = { k: v for k, v in user.dict().items if v is not None }
+        update_data = { k: v for k, v in user.model_dump().items if v is not None }
         
         if update_data:
             if "password" in update_data:
@@ -123,5 +123,5 @@ class UserRepository:
             return None
         
         # Return user without password_hash
-        user_dict = { k: v for k, v in user.dict().items if k != 'password_hash' }
+        user_dict = { k: v for k, v in user.model_dump().items() if k != 'password_hash' }
         return User(**user_dict)

@@ -1,4 +1,5 @@
 from motor.motor_asyncio import AsyncIOMotorClient
+import pymongo
 from .config import settings
 
 class Database:
@@ -15,7 +16,7 @@ async def connect_to_mongodb():
     # Create indexes for optimized lookups
     await create_indexes()
     
-    print(f"Connected to MongoDB at {settings.MONGODB_URL}")
+    print(f"Connected to MongoDB at {settings.MONGODB_DB_NAME}")
     
 async def close_mongodb_connection():
     if db.client:
@@ -25,12 +26,18 @@ async def close_mongodb_connection():
 async def create_indexes():
     """ Create neccessary indexes for MongoDB collections """
     # User indexes
-    await db.db.users.create_indexes("username", unique=True)
-    await db.db.users.create_indexes("email", unique=True)
+    await db.db.users.create_indexes([
+        pymongo.IndexModel("username", unique=True),
+        pymongo.IndexModel("email", unique=True)
+    ])
     
     # Project indexes
-    await db.db.projects.create_indexes("slug", unique=True)
-    await db.db.projects.create_indexes("user_id")
+    await db.db.projects.create_indexes([
+        pymongo.IndexModel("slug", unique=True),
+        pymongo.IndexModel("user_id")
+    ])
     
     # Project image indexes
-    await db.db.project_images.create_indexes("project_id")
+    await db.db.project_images.create_indexes([
+        pymongo.IndexModel("project_id")
+    ])
